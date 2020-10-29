@@ -4,6 +4,10 @@ SELECT @TranName = 'CreateTablesTran';
 BEGIN TRANSACTION @TranName;
 USE VideoLoc;
 
+-----------------------------------------------------------
+-----       Creating Tables without Foreign Keys      -----
+-----------------------------------------------------------
+
 CREATE TABLE Clients (
     Code_client INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     Titre VARCHAR(10) NOT NULL,
@@ -39,7 +43,7 @@ CREATE TABLE Locations (
     Date_emprunt DATE NULL CONSTRAINT ch_date_emprunt
     CHECK (Date_emprunt > DATEADD(YEAR, - 20, GETDATE())),
     Date_retour DATE NOT NULL CONSTRAINT ch_date_retour
-    CHECK (Date_emprunt < Date_retour),
+    CHECK (Date_retour > DATEADD(YEAR, - 20, GETDATE())),
     CONSTRAINT pk_locations PRIMARY KEY(Num_facture, Num_dvd)
 );
 
@@ -64,7 +68,38 @@ CREATE TABLE Realisateur (
     Pay VARCHAR(30) NULL
 );
 
-CREATE TABLE genres_film (
+CREATE TABLE Genres_film (
     Code_genre INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     Signification VARCHAR(20) NOT NULL UNIQUE
 );
+
+-----------------------------------------------------------
+-----     Creating the relations with alter table     -----
+-----------------------------------------------------------
+
+ALTER TABLE Factures
+ADD CONSTRAINT fk_client_factures
+FOREIGN KEY (Code_client) REFERENCES Clients(Code_client);
+
+ALTER TABLE Dvd
+ADD CONSTRAINT fk_dvd_genre
+FOREIGN KEY (Code_genre) REFERENCES Genres_film(Code_genre);
+
+ALTER TABLE Dvd
+ADD CONSTRAINT fk_dvd_realisateurs 
+FOREIGN KEY (Code_realisateur) REFERENCES Realisateur(Code_realisateur);
+
+ALTER TABLE Locations
+ADD CONSTRAINT fk_location_factures
+FOREIGN KEY (Num_facture) REFERENCES Factures(Num_facture);
+
+ALTER TABLE Locations
+ADD CONSTRAINT fk_location_dvd
+FOREIGN KEY (Num_dvd) REFERENCES Dvd(Num_dvd);
+
+ALTER TABLE Locations
+ADD CONSTRAINT fk_location_types
+FOREIGN KEY (Code_type) REFERENCES Types_location(Code_type);
+
+
+COMMIT TRANSACTION @TranName;
