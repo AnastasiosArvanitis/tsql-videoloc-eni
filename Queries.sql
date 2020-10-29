@@ -113,3 +113,31 @@ JOIN Locations l ON f.Num_facture = l.Num_facture
 JOIN Dvd d ON l.Num_dvd = d.Num_dvd
 GROUP BY c.Nom, c.Prenom, d.Titre
 ORDER BY 1, 2;
+
+SELECT COUNT(d.Num_dvd) AS "Total Film",
+r.Pay, gf.Signification
+FROM Dvd d
+JOIN Realisateur r ON d.Code_realisateur = r.Code_realisateur
+JOIN Genres_film gf ON d.Code_genre = gf.Code_genre
+GROUP BY r.Pay, gf.Signification
+ORDER BY 2, 3;
+
+SELECT AVG(d.Duree) AS "Average Film",
+r.Pay, gf.Signification
+FROM Dvd d
+JOIN Realisateur r ON d.Code_realisateur = r.Code_realisateur
+JOIN Genres_film gf ON d.Code_genre = gf.Code_genre
+GROUP BY r.Pay, gf.Signification
+ORDER BY 2, 3;
+
+SELECT Titre, Nom, Prenom, 
+    DATEDIFF(YY, Date_naissance, GETDATE()) AS Age
+INTO Client_Loire_Atl 
+FROM Clients
+WHERE Code_postal LIKE '44%'
+;
+
+SELECT * FROM Client_Loire_Atl;
+
+DELETE FROM  Client_Loire_Atl
+WHERE Age > 40;
