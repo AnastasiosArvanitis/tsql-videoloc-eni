@@ -101,5 +101,9 @@ ALTER TABLE Locations
 ADD CONSTRAINT fk_location_types
 FOREIGN KEY (Code_type) REFERENCES Types_location(Code_type);
 
+ALTER TABLE Clients
+ADD CONSTRAINT ch_titre
+CHECK (Titre IN ('M', 'Mme', 'Au'));
+
 
 COMMIT TRANSACTION @TranName;
