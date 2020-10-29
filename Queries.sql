@@ -92,3 +92,24 @@ JOIN Locations l ON d.Num_dvd = l.Num_dvd
 JOIN Factures f ON l.Num_facture = f.Num_facture
 JOIN Clients c ON f.Code_client = c.Code_client
 ORDER BY 1;
+
+SELECT CONCAT_WS(' ', c.Nom, c.Prenom) AS "Client full Name",
+CONCAT_WS(' ', r.Nom, r.Prenom) AS "Realisateur full name",
+d.Titre AS "Film Title"
+FROM Clients c
+JOIN Factures f ON c.Code_client = f.Code_client
+JOIN Locations l ON f.Num_facture = l.Num_facture
+JOIN Dvd d ON l.Num_dvd = d.Num_dvd
+JOIN Realisateur r on d.Code_realisateur = r.Code_realisateur
+WHERE r.Pay = 'USA' 
+AND f.Date_facture BETWEEN '06-01-2020' AND '06-30-2020'
+ORDER BY d.Titre; 
+
+SELECT CONCAT_WS(' ', c.Nom, c.Prenom) AS "Client full Name",
+d.Titre AS "Film Title", COUNT(d.Num_dvd)
+FROM Clients c
+JOIN Factures f ON c.Code_client = f.Code_client
+JOIN Locations l ON f.Num_facture = l.Num_facture
+JOIN Dvd d ON l.Num_dvd = d.Num_dvd
+GROUP BY c.Nom, c.Prenom, d.Titre
+ORDER BY 1, 2;
